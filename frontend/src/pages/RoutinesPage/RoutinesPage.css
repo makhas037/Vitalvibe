@@ -1,0 +1,248 @@
+/* File: src/pages/RoutinesPage/RoutinesPage.css */
+
+/* Variables (Assume these are defined globally or in a separate file like config.css) */
+:root {
+    --color-primary: #007bff; /* Blue */
+    --color-secondary: #e9ecef; /* Light Gray */
+    --color-surface: #ffffff; /* White */
+    --color-surface-light: #f8f9fa; /* Very Light Gray */
+    --color-text-primary: #343a40; /* Dark Gray */
+    --color-text-secondary: #6c757d; /* Medium Gray */
+    --color-red: #dc3545; /* Error Red */
+    --border-radius: 8px;
+    --card-padding: 20px;
+}
+
+/* --- Layout and Structure --- */
+.content-section {
+    padding: 24px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.section-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+}
+
+.section-header p {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+}
+
+.page-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2 parts for routines, 1 part for history */
+    gap: 30px;
+}
+
+.routines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Responsive grid for cards */
+    gap: 20px;
+    align-content: start; /* Pushes content to the top */
+}
+
+.loading-state, .no-data-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: var(--color-text-secondary);
+}
+
+/* --- Routine Card Styles --- */
+.routine-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-secondary);
+    border-radius: var(--border-radius);
+    padding: var(--card-padding);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    transition: transform 0.2s ease;
+}
+
+.routine-card:hover {
+    transform: translateY(-2px);
+}
+
+.routine-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.routine-header h3 { font-size: 20px; font-weight: 700; margin: 0; }
+.routine-description { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 15px; }
+
+.header-actions { display: flex; align-items: center; gap: 16px; }
+.routine-time { 
+    font-size: 14px; 
+    color: var(--color-text-secondary); 
+    display: flex;
+    align-items: center;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.delete-btn:hover { color: var(--color-red); }
+
+.routine-activities {
+    margin-bottom: 20px;
+}
+.no-activities-text { font-size: 14px; color: var(--color-text-secondary); text-align: center; padding: 10px 0; }
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--color-secondary);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+.activity-item:hover { background-color: var(--color-surface-light); }
+.activity-item:last-child { border-bottom: none; }
+
+.activity-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: var(--color-surface);
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+.activity-item.completed .activity-check {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.activity-name { 
+    flex-grow: 1; 
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+    font-weight: 500;
+}
+.activity-item.completed .activity-name {
+    text-decoration: line-through;
+    color: var(--color-text-secondary);
+}
+
+.activity-duration { 
+    color: var(--color-text-secondary); 
+    font-size: 13px; 
+    font-style: italic;
+}
+
+.routine-progress {
+    margin-top: auto;
+    padding-top: 10px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+.progress-bar {
+    height: 6px;
+    background-color: var(--color-secondary);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+.progress-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    border-radius: 3px;
+    transition: width 0.4s ease-in-out;
+}
+
+/* --- History Panel Styles --- */
+.history-panel {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-secondary);
+    border-radius: var(--border-radius);
+    padding: var(--card-padding);
+    height: fit-content;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.history-panel h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.history-panel > p { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 20px; }
+.history-list { display: flex; flex-direction: column; gap: 10px; }
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-surface-light);
+    padding: 10px 15px;
+    border-radius: 6px;
+    border-left: 3px solid var(--color-text-secondary);
+}
+.history-item span { font-weight: 500; color: var(--color-text-primary); }
+.history-item .btn--secondary {
+    padding: 6px 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: var(--color-secondary);
+    border: 1px solid var(--color-text-secondary);
+    color: var(--color-text-primary);
+}
+.history-item .btn--secondary:hover {
+    background-color: var(--color-text-secondary);
+    color: var(--color-surface);
+}
+.no-history-text { font-size: 14px; color: var(--color-text-secondary); text-align: center; padding: 20px 0; }
+
+
+/* --- Error Alert Styles --- */
+.alert-error {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24; /* Dark red text */
+    border: 1px solid #f5c6cb;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+}
+.alert-error svg {
+    margin-right: 10px;
+    font-size: 20px;
+}
+.btn-clear-error {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #721c24;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .page-layout {
+        grid-template-columns: 1fr; /* Stack routines and history panel on smaller screens */
+    }
+}

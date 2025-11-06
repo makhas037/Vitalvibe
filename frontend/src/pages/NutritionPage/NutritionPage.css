@@ -1,0 +1,437 @@
+﻿/* FILE: web-app/src/pages/NutritionPage/NutritionPage.css */
+
+.nutrition-page {
+    padding: 32px 40px;
+    min-height: 100vh;
+    background: var(--bg-darker);
+}
+
+.nutrition-header {
+    margin-bottom: 32px;
+}
+
+.nutrition-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px;
+}
+
+.nutrition-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Search/Log (2) | Summary (1) */
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.search-and-log {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.summary-and-goals {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 20px; /* Make summary sticky */
+    height: fit-content;
+}
+
+/* --- Date Selector --- */
+.date-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+}
+
+.date-selector .icon {
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.date-input {
+    padding: 8px 12px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+
+/* --- Search Section --- */
+.search-section {
+    padding: 20px;
+}
+
+.search-section h2, .meals-log h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-form input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.search-form button {
+    padding: 10px 15px;
+    background: var(--primary);
+    color: var(--bg-darker);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.search-form button:disabled {
+    background: var(--border);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.food-results {
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+}
+
+.food-results h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+.food-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.food-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-hover);
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.food-item:hover {
+    border-left: 4px solid var(--primary);
+}
+
+.food-info h4 {
+    font-size: 16px;
+    margin: 0 0 5px;
+}
+.food-brand {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin: 0;
+}
+
+.food-nutrition span {
+    font-size: 12px;
+    margin-right: 10px;
+    color: var(--text-secondary);
+}
+
+.btn-add {
+    background: var(--primary);
+    color: var(--bg-darker);
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* --- Daily Summary --- */
+.daily-summary {
+    padding: 20px;
+}
+
+.daily-summary h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.summary-card {
+    background: var(--bg-hover);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.summary-card.calorie-card {
+    grid-column: 1 / -1;
+    background: rgba(var(--primary-rgb), 0.1);
+}
+
+.summary-label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 5px;
+}
+
+.summary-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.summary-goal {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 5px;
+}
+
+/* Macro Progress Bars */
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    flex-grow: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.5s ease-in-out;
+}
+
+.progress-percent {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+
+/* --- Meals Log --- */
+.meals-log {
+    margin-top: 20px;
+}
+
+.meals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.meal-card {
+    display: grid;
+    grid-template-columns: 1fr auto 50px;
+    align-items: center;
+    background: var(--bg-hover);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.meal-header h4 {
+    font-size: 16px;
+    margin: 0 0 4px;
+}
+.meal-time {
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+.meal-nutrition {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.btn-remove {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+.btn-remove:hover {
+    color: #ef4444;
+}
+
+/* --- Modal Styles (Copied from previous examples and enhanced) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: var(--bg-surface);
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.modal h3 {
+    margin-top: 0;
+    color: var(--primary);
+}
+.modal-brand {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.servings-control {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.servings-control input {
+    width: 80px;
+    text-align: center;
+}
+.servings-control button {
+    padding: 8px 12px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.nutrition-preview {
+    background: var(--bg-hover);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.nutrition-preview h4 {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.nutrition-preview .nutrition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-cancel, .btn-confirm {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn-cancel {
+    background: var(--border);
+    color: var(--text-primary);
+    border: none;
+}
+.btn-confirm {
+    background: var(--primary);
+    color: var(--bg-darker);
+    border: none;
+}
+
+
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
+    .nutrition-layout {
+        grid-template-columns: 1fr; /* Stack columns on tablet */
+    }
+    .summary-and-goals {
+        position: static;
+        top: auto;
+    }
+    .summary-card {
+        text-align: left;
+    }
+    .summary-card.calorie-card {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .nutrition-page {
+        padding: 20px;
+    }
+    .meal-card {
+        grid-template-columns: 1fr 50px; /* Collapse macros */
+        grid-template-rows: auto auto;
+        gap: 8px;
+    }
+    .meal-nutrition {
+        grid-column: 1 / -1;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,101 @@
+﻿/* PrivacyPage.css */
+.privacy-page {
+  padding: 32px 40px;
+  min-height: 100vh;
+  background: var(--bg-darker);
+}
+
+.page-header-privacy {
+  margin-bottom: 32px;
+}
+
+.page-header-privacy h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.page-header-privacy p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.privacy-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.privacy-content {
+  display: grid;
+  gap: 32px;
+}
+
+.privacy-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.privacy-section h2 {
+  margin: 0 0 20px;
+  color: var(--text-primary);
+  font-size: 20px;
+}
+
+.control-item, .action-item {
+  padding: 16px;
+  background: var(--bg-hover);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.control-item h3, .action-item h3 {
+  margin: 0 0 4px;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.control-item p, .action-item p {
+  margin: 0 0 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.btn-secondary, .btn-danger {
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+}
+
+.btn-secondary {
+  background: var(--primary);
+  color: var(--bg-darker);
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.action-item.danger {
+  border-left: 3px solid #ef4444;
+}
+
+@media (max-width: 768px) {
+  .privacy-page { padding: 20px; }
+}

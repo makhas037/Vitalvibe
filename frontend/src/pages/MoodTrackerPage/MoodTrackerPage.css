@@ -1,0 +1,347 @@
+﻿/* MoodTrackerPage.css */
+
+.mood-tracker-page {
+  padding: 32px 40px;
+  min-height: 100vh;
+  background: var(--bg-darker);
+}
+
+.mood-header {
+  margin-bottom: 32px;
+}
+
+.mood-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.mood-header p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.mood-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.mood-controls {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.date-input {
+  padding: 10px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+}
+
+.btn-add-mood {
+  padding: 10px 20px;
+  background: var(--primary);
+  border: none;
+  border-radius: 8px;
+  color: var(--bg-darker);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-mood:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(32, 201, 151, 0.3);
+}
+
+.mood-form-container {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.mood-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mood-selector {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+.mood-btn {
+  padding: 12px;
+  background: var(--bg-hover);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 28px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mood-btn:hover {
+  transform: scale(1.1);
+  border-color: var(--primary);
+}
+
+.mood-btn.active {
+  border-color: var(--primary);
+  background: rgba(32, 201, 151, 0.2);
+}
+
+.intensity-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-hover);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.intensity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+}
+
+.intensity-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: none;
+}
+
+.notes-input {
+  padding: 12px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.triggers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.trigger-chip {
+  padding: 8px 12px;
+  background: var(--bg-hover);
+  border: 2px solid transparent;
+  border-radius: 20px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.trigger-chip:hover {
+  border-color: var(--primary);
+}
+
+.trigger-chip.active {
+  background: var(--primary);
+  color: var(--bg-darker);
+  border-color: var(--primary);
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.btn-save, .btn-cancel {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-save {
+  background: var(--primary);
+  color: var(--bg-darker);
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+}
+
+.btn-cancel {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.moods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mood-entry {
+  display: flex;
+  gap: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s;
+}
+
+.mood-entry:hover {
+  border-color: var(--primary);
+}
+
+.mood-emoji {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.mood-details {
+  flex: 1;
+}
+
+.mood-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.mood-intensity {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.mood-time {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.mood-notes {
+  margin: 8px 0;
+  color: var(--text-secondary);
+}
+
+.mood-triggers {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.trigger-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  background: rgba(32, 201, 151, 0.2);
+  color: var(--primary);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.mood-stats {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+}
+
+.mood-stats h3 {
+  margin: 0 0 16px;
+  color: var(--text-primary);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: var(--bg-hover);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.no-moods,
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .mood-tracker-page {
+    padding: 20px;
+  }
+
+  .mood-selector {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .triggers-grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  }
+
+  .mood-entry {
+    flex-direction: column;
+  }
+
+  .mood-emoji {
+    font-size: 32px;
+  }
+}

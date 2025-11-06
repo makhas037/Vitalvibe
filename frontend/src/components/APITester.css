@@ -1,0 +1,92 @@
+﻿/* APITester.css */
+.api-tester {
+  padding: 32px 40px;
+  min-height: 100vh;
+  background: var(--bg-darker);
+}
+
+.api-tester h2 {
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+.tests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.test-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.test-card h3 {
+  margin: 0 0 12px;
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.btn-test {
+  background: var(--primary);
+  color: var(--bg-darker);
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.btn-test:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn-test:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.result {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.result.success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid #22c55e;
+}
+
+.result.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+}
+
+.status {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.result.success .status {
+  color: #22c55e;
+}
+
+.result.error .status {
+  color: #ef4444;
+}
+
+.result pre {
+  color: var(--text-secondary);
+  overflow-x: auto;
+  font-size: 11px;
+  max-height: 200px;
+}
+
+.error-msg {
+  color: #ef4444;
+}

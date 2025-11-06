@@ -1,0 +1,44 @@
+$outputFile = "ecom-dash-complete-codebase.txt"
+$excludeFolders = @('node_modules', 'dist', '__pycache__', 'uploads', '.git', 'build')
+$includeExtensions = @('.js', '.jsx', '.py', '.sql', '.css', '.env')
+Get-ChildItem -Path . -Recurse -File | Where-Object { $_.FullName -notmatch 'node_modules|dist|__pycache__|uploads|\.git' -and $_.Extension -match '\.(js|jsx|py|sql|json|css)$' } | Select-Object FullName, Length | Format-Table -AutoSize
+$files = Get-ChildItem -Path . -Recurse -File | Where-Object {
+    $file = $_
+    $shouldExclude = $false
+    foreach ($folder in $excludeFolders) {
+        if ($file.FullName -like "*\$folder\*") {
+            $shouldExclude = $true
+            break
+        }
+    }
+    -not $shouldExclude -and $includeExtensions -contains $file.Extension
+}
+
+$totalFiles = $files.Count
+$counter = 0
+
+"Total files to process: $totalFiles`n`n" | Out-File -FilePath $outputFile -Encoding UTF8
+
+foreach ($file in $files) {
+    $counter++
+    Write-Progress -Activity "Extracting code" -Status "Processing $($file.Name)" -PercentComplete (($counter / $totalFiles) * 100)
+    
+    "`n`n========================================" | Add-Content -Path $outputFile
+    "FILE: $($file.FullName.Replace($PWD, '.'))" | Add-Content -Path $outputFile
+    "SIZE: $([math]::Round($file.Length/1KB, 2)) KB" | Add-Content -Path $outputFile
+    "========================================`n" | Add-Content -Path $outputFile
+    
+    Get-Content $file.FullName -Raw | Add-Content -Path $outputFile
+
+
+
+}
+
+Write-Host "`n✅ Complete! Extracted $totalFiles files to $outputFile" -ForegroundColor Green
+
+
+
+
+
+
+Get-ChildItem -Path . -Recurse -File | Where-Object { $_.FullName -notmatch 'node_modules|dist|__pycache__|uploads|\.git' -and $_.Extension -match '\.(js|jsx|py|sql|json|css)$' } | Select-Object FullName, Length | Format-Table -AutoSize
