@@ -56,19 +56,35 @@ export const workoutService = {
 
 // ✅ NUTRITION SERVICE
 export const nutritionService = {
+  // Search foods using USDA API
+  searchFoods: (query) => 
+    apiClient.get(`/nutrition/search?query=${encodeURIComponent(query)}`),
+  
+  // Get food details by FDC ID
+  getFoodDetails: (fdcId) =>
+    apiClient.get(`/nutrition/food/${fdcId}`),
+  
+  // Get user's nutrition logs
   getByUserId: (userId = getDemoUser(), date) => 
     apiClient.get(`/nutrition/${userId}?date=${date}`),
+  
   getDailyNutrition: (userId = getDemoUser(), date) =>
     apiClient.get(`/nutrition/${userId}?date=${date}`),
+  
   getByDateRange: (userId = getDemoUser(), startDate, endDate) =>
     apiClient.get(`/nutrition/${userId}?start=${startDate}&end=${endDate}`),
+  
+  // Log a meal
   create: (data) => apiClient.post('/nutrition', { 
     ...data, 
     userId: getDemoUser(),
     date: data.date || new Date()
   }),
+  
+  // Delete a nutrition log
   delete: (id) => apiClient.delete(`/nutrition/${id}`)
 };
+
 
 // ✅ ROUTINE SERVICE
 export const routineService = {

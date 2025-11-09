@@ -345,3 +345,22 @@
     font-size: 32px;
   }
 }
+
+
+.mood-ai-advice {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 24px;
+}
+
+.mood-ai-advice h3 {
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.mood-ai-advice p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}

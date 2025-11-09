@@ -1,6 +1,6 @@
 ﻿/**
  * FILE: server/database/schemas/Mood.schema.js
- * FIXED: Proper enum values and userId as String (for demo-user)
+ * UPDATED: Support for both emoji and text mood values
  */
 
 const mongoose = require('mongoose');
@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const moodSchema = new mongoose.Schema(
   {
     userId: {
-      type: String,  // Changed from ObjectId to String for demo-user support
+      type: String,
       required: true,
       index: true
     },
@@ -24,8 +24,13 @@ const moodSchema = new mongoose.Schema(
     mood: {
       type: String,
       required: true,
-      enum: ['terrible', 'bad', 'okay', 'good', 'great', 'happy', 'sad', 'anxious', 'stressed', 'calm', 'energetic', 'tired', 'angry', 'excited', 'lonely'],
-      lowercase: true
+      // Accept both text and emoji values
+      enum: ['happy', 'sad', 'anxious', 'stressed', 'calm', 'energetic', 'tired', 'angry', 'excited', 'lonely', 'neutral', '😊', '😔', '😰', '😤', '😴', '😐']
+    },
+    moodText: {
+      type: String,
+      // Store the text version for analysis
+      enum: ['happy', 'sad', 'anxious', 'angry', 'tired', 'neutral']
     },
     intensity: {
       type: Number,
@@ -33,31 +38,23 @@ const moodSchema = new mongoose.Schema(
       max: 10,
       required: true
     },
-    emotions: [
-      {
-        type: String,
-        enum: ['happy', 'sad', 'anxious', 'stressed', 'calm', 'energetic', 'tired', 'angry', 'excited', 'lonely']
-      }
-    ],
+    emotions: [String],
     notes: {
       type: String,
       maxlength: 2000
     },
     triggers: [String],
-    activities: [
-      {
-        type: String,
-        enum: ['work', 'exercise', 'socializing', 'relaxing', 'eating', 'sleeping', 'entertainment', 'hobbies']
-      }
-    ],
+    activities: [String],
+    aiAnalysis: {
+      sentiment: String,
+      advice: String,
+      insights: [String],
+      riskLevel: { type: String, enum: ['low', 'medium', 'high'] },
+      generatedAt: Date
+    },
     isPrivate: {
       type: Boolean,
       default: true
-    },
-    context: {
-      stressLevel: { type: Number, min: 1, max: 10 },
-      energyLevel: { type: Number, min: 1, max: 10 },
-      gratitude: String
     }
   },
   {

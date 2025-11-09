@@ -16,116 +16,118 @@ const NutritionPage = () => {
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
     const loadDailyNutrition = useCallback(async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await nutritionService.getDailyNutrition(userId, selectedDate);
-            const meals = Array.isArray(response.data) ? response.data : [];
-            
-            setTodaysMeals(meals);
-            
-            // Calculate totals from meals
-            const totals = meals.reduce((acc, meal) => ({
-                calories: acc.calories + (meal.totals?.calories || 0),
-                protein: acc.protein + (meal.totals?.protein || 0),
-                carbs: acc.carbs + (meal.totals?.carbs || 0),
-                fat: acc.fat + (meal.totals?.fat || 0)
-            }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
-            
-            setDailyTotals(totals);
-        } catch (err) {
-            console.error('Failed to load meals:', err);
-            setError('Failed to load nutrition data');
-            setTodaysMeals([]);
-            setDailyTotals({ calories: 0, protein: 0, carbs: 0, fat: 0 });
-        } finally {
-            setLoading(false);
-        }
-    }, [userId, selectedDate]);
+    setLoading(true);
+    setError(null);
+    try {
+        const response = await nutritionService.getDailyNutrition(userId, selectedDate);
+        const meals = response.data?.data || [];
+        
+        setTodaysMeals(meals);
+        
+        // Calculate totals from meals
+        const totals = meals.reduce((acc, meal) => ({
+            calories: acc.calories + (meal.totals?.calories || 0),
+            protein: acc.protein + (meal.totals?.protein || 0),
+            carbs: acc.carbs + (meal.totals?.carbs || 0),
+            fat: acc.fat + (meal.totals?.fat || 0)
+        }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+        
+        setDailyTotals(totals);
+    } catch (err) {
+        console.error('Failed to load meals:', err);
+        setError('Failed to load nutrition data');
+        setTodaysMeals([]);
+        setDailyTotals({ calories: 0, protein: 0, carbs: 0, fat: 0 });
+    } finally {
+        setLoading(false);
+    }
+}, [userId, selectedDate]);
+
 
     useEffect(() => {
         loadDailyNutrition();
     }, [loadDailyNutrition]);
 
     const searchFood = async (e) => {
-        e.preventDefault();
-        if (!searchTerm.trim()) return;
+    e.preventDefault();
+    if (!searchTerm.trim()) return;
 
-        setLoading(true);
-        setError(null);
-        try {
-            // Mock food database - replace with real API
-            const mockFoods = [
-                { id: 1, name: 'Chicken Breast (Grilled)', brand: 'Generic', calories: 165, protein: 31, carbs: 0, fat: 3.6 },
-                { id: 2, name: 'Brown Rice (Cooked)', brand: 'Generic', calories: 112, protein: 2.6, carbs: 24, fat: 0.9 },
-                { id: 3, name: 'Broccoli (Steamed)', brand: 'Generic', calories: 55, protein: 3.7, carbs: 11, fat: 0.6 },
-                { id: 4, name: 'Salmon Fillet', brand: 'Generic', calories: 206, protein: 22, carbs: 0, fat: 13 },
-                { id: 5, name: 'Oatmeal', brand: 'Generic', calories: 150, protein: 5, carbs: 27, fat: 3 },
-                { id: 6, name: 'Greek Yogurt', brand: 'Generic', calories: 100, protein: 10, carbs: 6, fat: 4 },
-                { id: 7, name: 'Banana', brand: 'Fresh', calories: 105, protein: 1.3, carbs: 27, fat: 0.4 },
-                { id: 8, name: 'Eggs (2 large)', brand: 'Generic', calories: 140, protein: 12, carbs: 1, fat: 10 }
-            ];
-            
-            const results = mockFoods.filter(f => 
-                f.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            
-            setFoodResults(results);
-        } catch (err) {
-            console.error('Search failed:', err);
-            setError('Failed to search food');
-            setFoodResults([]);
-        } finally {
-            setLoading(false);
-        }
-    };
+    setLoading(true);
+    setError(null);
+    try {
+        // Use USDA API for real food data
+        const response = await nutritionService.searchFoods(searchTerm);
+        const foods = response.data?.data || [];
+        
+        // Transform to component format
+        const results = foods.map(food => ({
+            fdcId: food.fdcId,
+            name: food.name,
+            brand: food.brand,
+            calories: Math.round(food.nutrients.calories),
+            protein: food.nutrients.protein.toFixed(1),
+            carbs: food.nutrients.carbs.toFixed(1),
+            fat: food.nutrients.fat.toFixed(1)
+        }));
+        
+        setFoodResults(results);
+    } catch (err) {
+        console.error('Search failed:', err);
+        setError('Failed to search food. Please try again.');
+        setFoodResults([]);
+    } finally {
+        setLoading(false);
+    }
+};
 
     const logMeal = async (food) => {
-        setLoading(true);
-        setError(null);
-        
-        try {
-            const mealData = {
-                date: selectedDate,
-                mealType: 'snack',
-                mealName: food.name,
-                time: new Date(),
-                foods: [{
-                    name: food.name,
-                    brand: food.brand,
-                    servingSize: 100,
-                    servingUnit: 'g',
-                    quantity: servings,
-                    nutrients: {
-                        calories: food.calories,
-                        protein: food.protein,
-                        carbs: food.carbs,
-                        fat: food.fat
-                    }
-                }],
-                totals: {
-                    calories: food.calories * servings,
-                    protein: food.protein * servings,
-                    carbs: food.carbs * servings,
-                    fat: food.fat * servings
+    setLoading(true);
+    setError(null);
+    
+    try {
+        const mealData = {
+            date: selectedDate,
+            mealType: 'snack',
+            mealName: food.name,
+            time: new Date(),
+            foods: [{
+                fdcId: food.fdcId,
+                name: food.name,
+                brand: food.brand,
+                servingSize: 100,
+                servingUnit: 'g',
+                quantity: servings,
+                nutrients: {
+                    calories: parseFloat(food.calories),
+                    protein: parseFloat(food.protein),
+                    carbs: parseFloat(food.carbs),
+                    fat: parseFloat(food.fat)
                 }
-            };
+            }],
+            totals: {
+                calories: parseFloat(food.calories) * servings,
+                protein: parseFloat(food.protein) * servings,
+                carbs: parseFloat(food.carbs) * servings,
+                fat: parseFloat(food.fat) * servings
+            }
+        };
 
-            await nutritionService.create(mealData);
-            
-            setSelectedFood(null);
-            setServings(1);
-            setFoodResults([]);
-            setSearchTerm('');
-            await loadDailyNutrition();
-            
-        } catch (err) {
-            console.error('Meal logging failed:', err);
-            setError('Failed to log meal');
-        } finally {
-            setLoading(false);
-        }
-    };
+        await nutritionService.create(mealData);
+        
+        setSelectedFood(null);
+        setServings(1);
+        setFoodResults([]);
+        setSearchTerm('');
+        await loadDailyNutrition();
+        
+    } catch (err) {
+        console.error('Meal logging failed:', err);
+        setError('Failed to log meal. Please try again.');
+    } finally {
+        setLoading(false);
+    }
+};
+
 
     const removeMeal = async (mealId) => {
         if (!window.confirm('Delete this meal?')) return;

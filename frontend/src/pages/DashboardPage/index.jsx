@@ -1,5 +1,6 @@
 ﻿// FILE: /src/pages/DashboardPage/index.jsx
-// PROFESSIONAL: Integration with useDashboard hook and fixed data processing
+// PROFESSIONAL: Integration with useDashboard hook and Weather API
+
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Line, Doughnut } from 'react-chartjs-2';
@@ -7,10 +8,11 @@ import {
     Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement,
     Title, Tooltip, Legend, Filler
 } from 'chart.js';
-import { IoRefreshCircle, IoAlertCircleOutline, IoHeart, IoWalk, IoWater, IoMoon } from 'react-icons/io5';
+import { IoRefreshCircle, IoAlertCircleOutline, IoHeart, IoWalk, IoWater, IoMoon, IoCloudOutline } from 'react-icons/io5';
 import { useDashboard } from '../../hooks/useDashboard';
-import dashboardAPI from '../../services/dashboardAPI'; // Assuming this provides non-metric data like weather
+import dashboardAPI from '../../services/dashboardAPI';
 import './DashboardPage.css';
+
 
 // Register Chart.js elements
 ChartJS.register(
@@ -18,43 +20,35 @@ ChartJS.register(
     Title, Tooltip, Legend, Filler
 );
 
+
 // --- Data Normalization and Processing ---
 const processDashboardData = (rawData) => {
-    // Fallbacks
     if (!rawData || !rawData.healthMetrics) return null;
     const metrics = rawData.healthMetrics;
-    
-    // 🛑 CRITICAL FIX: notifications is now guaranteed to be an array from the hook, but check again for safety.
     const notifications = Array.isArray(rawData.notifications) ? rawData.notifications : []; 
 
-    // --- Steps Data Processing (Ensure arrays are safe) ---
     const stepsData = Array.isArray(metrics.steps) ? metrics.steps : [];
     const stepsHistory = stepsData.map(d => d.steps || 0).slice(-7); 
     const latestSteps = stepsHistory.slice(-1)[0] || 0;
     const stepsGoal = 10000;
     const stepsPercent = Math.min(100, (latestSteps / stepsGoal) * 100).toFixed(0);
 
-    // --- Hydration Data Processing ---
     const hydrationData = Array.isArray(metrics.hydration) ? metrics.hydration : [];
     const latestHydration = hydrationData.slice(-1)[0]?.liters || 1.5;
     const hydrationGoal = 2.5;
     const hydrationPercent = Math.min(100, (latestHydration / hydrationGoal) * 100).toFixed(0);
 
-    // --- Heart Rate Data Processing ---
     const heartRateData = Array.isArray(metrics.heartRate) ? metrics.heartRate : [];
     const latestHR = heartRateData.slice(-1)[0]?.rate || 75;
     const heartStatus = latestHR > 80 ? 'High' : (latestHR < 60 ? 'Low' : 'Normal');
 
-    // --- Sleep Data Processing ---
     const sleepData = Array.isArray(metrics.sleep) ? metrics.sleep : [];
     const latestSleep = sleepData.slice(-1)[0]?.durationHours || 7.2;
     const sleepQuality = sleepData.slice(-1)[0]?.quality || 'Good';
 
-    // --- Quick Stats (Mocked or retrieved from separate endpoint) ---
     const quickStats = {
         calories: metrics.caloriesBurned || 2100, 
         activeMinutes: metrics.activeMinutes || 90, 
-        weather: { temp: 25, condition: 'Sunny', humidity: 60, icon: '01d' } 
     };
 
     return {
@@ -63,43 +57,63 @@ const processDashboardData = (rawData) => {
         latestHydration, hydrationGoal, hydrationPercent,
         latestSleep: parseFloat(latestSleep.toFixed(1)), 
         sleepQuality,
-        // 🛑 FIX: notifications.filter is now safe
         notificationsCount: notifications.filter(n => !n.read).length,
         ...quickStats,
     };
 };
 
+
 const DashboardPage = () => {
-    // 🛑 FIX: userId handling moved to hook. We pass a null or actual ID if present.
     const rawUser = JSON.parse(localStorage.getItem('user') || '{}');
     const userId = rawUser._id || null; 
 
     const { data: hookData, loading, error, refetch, lastUpdated } = useDashboard(userId);
     
-    const [secondarySummary, setSecondarySummary] = useState(null);
+    const [weatherData, setWeatherData] = useState(null);
+    const [weatherLoading, setWeatherLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
-    // Process hook data whenever it changes
     const healthData = useMemo(() => processDashboardData(hookData), [hookData]);
 
-    // Load secondary data (e.g., weather/summary)
+    // Fetch Weather Data
     useEffect(() => {
-        const loadSecondarySummary = async () => {
-             // Use weatherService or dashboardAPI, depending on what's available
-             const summary = await dashboardAPI.getHealthSummary().catch(() => ({ weather: healthData.weather }));
-             setSecondarySummary(summary);
+        const fetchWeather = async () => {
+            setWeatherLoading(true);
+            try {
+                const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY || '05895af7db66255898643c62bfa63ad3';
+                const city = 'Vellore'; // Default city, you can make this dynamic
+                
+                const response = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
+                );
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setWeatherData({
+                        temp: Math.round(data.main.temp),
+                        condition: data.weather[0].main,
+                        description: data.weather[0].description,
+                        humidity: data.main.humidity,
+                        windSpeed: data.wind.speed,
+                        icon: data.weather[0].icon,
+                        city: data.name,
+                        feelsLike: Math.round(data.main.feels_like)
+                    });
+                }
+            } catch (err) {
+                console.error('Weather fetch error:', err);
+                setWeatherData(null);
+            } finally {
+                setWeatherLoading(false);
+            }
         };
-        if (healthData && !secondarySummary) {
-            loadSecondarySummary();
-        }
-    }, [healthData, secondarySummary]);
 
+        fetchWeather();
+    }, []);
 
     const handleRefresh = async () => {
         setRefreshing(true);
         await refetch();
-        const summary = await dashboardAPI.getHealthSummary().catch(() => ({}));
-        setSecondarySummary(summary);
         setRefreshing(false);
     };
 
@@ -131,9 +145,7 @@ const DashboardPage = () => {
          return <div className="dashboard-page"><p className="no-data">No comprehensive health data available. Log in to sync data.</p></div>;
     }
 
-
     // --- Chart Data Definition ---
-
     const weeklyStepsData = {
         labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
         datasets: [{
@@ -179,9 +191,6 @@ const DashboardPage = () => {
             tooltip: { callbacks: { label: (context) => `${context.label}: ${context.parsed.toFixed(1)}L` } }
         }
     };
-
-
-    // --- Render Component ---
 
     return (
         <div className="dashboard-page">
@@ -312,7 +321,56 @@ const DashboardPage = () => {
                     </div>
                 </div>
 
-                {/* 5. Weekly Steps Chart */}
+                {/* 5. Weather Card - NEW */}
+                <div className="metric-card weather-card animated">
+                    <div className="card-header">
+                        <div className="metric-icon"><IoCloudOutline /></div>
+                    </div>
+                    <div className="metric-content">
+                        {weatherLoading ? (
+                            <div className="weather-loading">
+                                <div className="mini-loader"></div>
+                                <p>Loading weather...</p>
+                            </div>
+                        ) : weatherData ? (
+                            <>
+                                <h3>Current Weather</h3>
+                                <div className="weather-location">{weatherData.city}</div>
+                                <div className="weather-main">
+                                    <img 
+                                        src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
+                                        alt={weatherData.description}
+                                        className="weather-icon-img"
+                                    />
+                                    <div className="weather-temp">
+                                        {weatherData.temp}°C
+                                    </div>
+                                </div>
+                                <div className="weather-condition">{weatherData.description}</div>
+                                <div className="weather-details">
+                                    <div className="weather-detail">
+                                        <span className="detail-label">Feels Like</span>
+                                        <span className="detail-value">{weatherData.feelsLike}°C</span>
+                                    </div>
+                                    <div className="weather-detail">
+                                        <span className="detail-label">Humidity</span>
+                                        <span className="detail-value">{weatherData.humidity}%</span>
+                                    </div>
+                                    <div className="weather-detail">
+                                        <span className="detail-label">Wind</span>
+                                        <span className="detail-value">{weatherData.windSpeed} m/s</span>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="weather-error">
+                                <p>Unable to load weather data</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* 6. Weekly Steps Chart */}
                 <div className="chart-card full-width animated">
                     <div className="chart-header">
                         <h3>📈 Weekly Steps Trend</h3>
@@ -322,7 +380,7 @@ const DashboardPage = () => {
                     </div>
                 </div>
 
-                {/* 6. Weather & Tips (Use secondarySummary data) */}
+                {/* 7. Health Tips */}
                 <div className="info-card tips animated">
                     <h3>💡 Today's Health Tips</h3>
                     <div className="tips-list">
@@ -336,8 +394,7 @@ const DashboardPage = () => {
                         </div>
                         <div className="tip-item">
                             <span className="tip-icon">☀️</span>
-                            {/* Use secondary summary for weather info if available */}
-                            <span>Outdoor air quality is {secondarySummary?.airQuality || 'good'}.</span>
+                            <span>Perfect weather for outdoor activities today!</span>
                         </div>
                     </div>
                 </div>
